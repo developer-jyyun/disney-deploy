@@ -137,12 +137,13 @@ const NavWrapper = styled.nav`
   width: 100%;
   background: #0b0d17;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-
   & > .inner {
-    max-width: 1200px;
+    max-width: 1400px;
     width: 100%;
     margin: 0 auto;
     padding: 8px 16px;
+    box-sizing: border-box;
+
     display: flex;
     align-items: center;
     gap: 12px;
