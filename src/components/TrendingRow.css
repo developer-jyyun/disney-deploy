@@ -1,0 +1,19 @@
+.poster-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.poster-card:hover {
+  transform: scale(1.05);
+}
+
+.poster-img {
+  display: block;
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
