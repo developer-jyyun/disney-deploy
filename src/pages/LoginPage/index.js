@@ -1,20 +1,56 @@
 import React from "react";
 import styled from "styled-components";
+import {
+  signInWithPopup,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
+import { auth, provider } from "../../firebase";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
+  // 로그인(자동 로그인 유지: localPersistence)
+  const signIn = async () => {
+    try {
+      await setPersistence(auth, browserLocalPersistence);
+      const { user } = await signInWithPopup(auth, provider);
+      localStorage.setItem("userData", JSON.stringify(user));
+      // 게스트 플래그가 남아있다면 제거
+      localStorage.removeItem("guest");
+      navigate("/main");
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // 게스트로 둘러보기
+  const continueAsGuest = () => {
+    localStorage.setItem("guest", "true");
+    navigate("/main");
+  };
+
   return (
     <Container>
       <Content>
         <Center>
           <LogoOne src="/images/cta-logo-one.svg" alt="logo-one" />
-          <SignUpLink>지금 가입</SignUpLink>
+
+          <Buttons>
+            <LoginButton onClick={signIn}>로그인</LoginButton>
+            <GuestButton onClick={continueAsGuest}>
+              로그인 없이 둘러보기
+            </GuestButton>
+          </Buttons>
+
           <Description>
-            영화에 대한 프리미어 액세스를 얻으십시오. 디즈니 플러스 가격은 다음
-            주부터 1000원 인상됩니다.
+            구글계정으로 쉽게 로그인 가능합니다. 게스트 버튼을 누르면 로그인
+            없이 둘러 볼 수 있습니다.
           </Description>
+
           <LogoTwo src="images/cta-logo-two.png" alt="logo-two" />
         </Center>
-        <BgImage />
       </Content>
     </Container>
   );
@@ -22,19 +58,7 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-const BgImage = styled.div`
-  height: 100%;
-  background-position: top;
-  background-image: url("/images/login-background.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: -1;
-`;
-
+/* styled-components */
 const Container = styled.section`
   overflow: hidden;
   display: flex;
@@ -42,7 +66,6 @@ const Container = styled.section`
   text-align: center;
   height: 100vh;
 `;
-
 const Content = styled.div`
   margin-bottom: 10vw;
   width: 100%;
@@ -56,14 +79,12 @@ const Content = styled.div`
   padding: 80px 40px;
   height: 100%;
 `;
-
 const Center = styled.div`
   max-width: 650px;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
-
 const LogoOne = styled.img`
   margin-bottom: 12px;
   max-width: 600px;
@@ -71,71 +92,56 @@ const LogoOne = styled.img`
   display: block;
   width: 100%;
 `;
-
-const SignUpLink = styled.a`
-  font-weight: bold;
-  color: #f9f9f9;
-  background-color: #0063e5;
-  margin-bottom: 12px;
+const Buttons = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
   width: 100%;
-  letter-spacing: 1.5px;
-  font-size: 18px;
-  padding: 16.5px 0;
-  border: 1px solid transparent;
+  margin: 8px 0 12px;
+`;
+const LoginButton = styled.button`
+  background-color: #0063e5;
+  width: 100%;
+  font-weight: 700;
+  padding: 16px 0;
+  color: #f9f9f9;
   border-radius: 4px;
-
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  border: none;
   &:hover {
     background-color: #0483ee;
   }
 `;
-
-const Description = styled.p`
-  font-size: 11px;
-  margin: 0 0 24px;
-  line-height: 1.5;
-  letter-spacing: 1.5px;
+const GuestButton = styled.button`
+  background: #131a2a;
+  color: #f9f9f9;
+  width: 100%;
+  font-weight: 700;
+  padding: 16px 0;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  border: none;
+  &:hover {
+    background: #0f1522;
+  }
 `;
-
+const Description = styled.p`
+  color: hsla(0, 0%, 95.3%, 1);
+  font-size: 12px;
+  margin: 8px 0 24px;
+  line-height: 1.6;
+  letter-spacing: 0.5px;
+`;
 const LogoTwo = styled.img`
   max-width: 600px;
   margin-bottom: 20px;
   display: inline-block;
   vertical-align: bottom;
   width: 100%;
-`;
-
-const DropDown = styled.div`
-  position: absolute;
-  top: 48px;
-  right: 0px;
-  background: rgb(19, 19, 19);
-  border: 1px solid rgba(151, 151, 151, 0.34);
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 14px;
-  letter-spacing: 3px;
-  width: 100px;
-  opacity: 0;
-`;
-
-const SignOut = styled.div`
-  position: relative;
-  height: 48px;
-  width: 48px;
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    ${DropDown} {
-      opacity: 1;
-      transition-duration: 1s;
-    }
-  }
-`;
-
-const UserImg = styled.img`
-  height: 100%;
-  border-radius: 50%;
 `;
