@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { onAuthStateChanged, signOut, signInWithPopup } from "firebase/auth";
 import styled from "styled-components";
 import {
@@ -19,6 +19,8 @@ const Nav = () => {
 
   const [userData, setUserData] = useState(initialUserData);
   const [guest, setGuest] = useState(localStorage.getItem("guest") === "true");
+  const [isOpen, setIsOpen] = useState(false); // ✅ 드롭다운 상태
+  const dropdownRef = useRef(null);
 
   const handleSignOut = async () => {
     try {
@@ -34,7 +36,7 @@ const Nav = () => {
     }
   };
 
-  // 🔹 게스트에서 바로 구글 팝업 로그인
+  // 게스트에서 바로 구글 팝업 로그인
   const signInFromNav = async () => {
     try {
       // 보고 있던 경로 기억했다가 로그인 후 복귀
@@ -43,14 +45,11 @@ const Nav = () => {
 
       // 자동 로그인 유지
       await setPersistence(auth, browserLocalPersistence);
-
       const { user } = await signInWithPopup(auth, provider);
-
       localStorage.setItem("userData", JSON.stringify(user));
       localStorage.removeItem("guest");
       setUserData(user);
       setGuest(false);
-
       const dest = sessionStorage.getItem("returnTo") || "/main";
       sessionStorage.removeItem("returnTo");
       navigate(dest);
@@ -59,11 +58,21 @@ const Nav = () => {
     }
   };
 
+  // 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       const isGuest = localStorage.getItem("guest") === "true";
       const saved = sessionStorage.getItem("returnTo");
-
       if (user) {
         // 로그인 상태에서 로그인 페이지면 저장된 경로로 복귀(없으면 /main)
         if (pathname === "/") {
@@ -111,12 +120,17 @@ const Nav = () => {
         </SearchBox>
 
         {userData?.photoURL ? (
-          // 로그인 상태: 아바타 + 로그아웃
-          <SignOut>
-            <UserImg src={userData.photoURL} alt={userData.displayName} />
-            <DropDown onClick={handleSignOut}>
-              <span>로그아웃</span>
-            </DropDown>
+          <SignOut ref={dropdownRef}>
+            <UserImg
+              src={userData.photoURL}
+              alt={userData.displayName}
+              onClick={() => setIsOpen((prev) => !prev)}
+            />
+            {isOpen && (
+              <DropDown>
+                <button onClick={handleSignOut}>로그아웃</button>
+              </DropDown>
+            )}
           </SignOut>
         ) : guest ? (
           // 게스트 상태: 상단에 '로그인' 버튼 → 팝업 로그인
@@ -130,6 +144,9 @@ const Nav = () => {
 };
 
 export default Nav;
+
+/* --- styled-components --- */
+
 const NavWrapper = styled.nav`
   position: sticky;
   top: 0;
@@ -137,80 +154,32 @@ const NavWrapper = styled.nav`
   width: 100%;
   background: #0b0d17;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
   & > .inner {
     max-width: 1400px;
-    width: 100%;
     margin: 0 auto;
     padding: 8px 16px;
-    box-sizing: border-box;
-
     display: flex;
     align-items: center;
     gap: 12px;
-    flex-wrap: wrap; /* 모바일 2줄 허용 */
-  }
-
-  @media (min-width: 768px) {
-    & > .inner {
-      height: 64px;
-      padding: 0 28px;
-      flex-wrap: nowrap; /* 데스크톱 1줄 */
-    }
   }
 `;
 
 const Logo = styled.a`
-  order: 1;
   flex: 0 0 auto;
   width: 84px;
-  display: inline-block;
-  img {
-    display: block;
-    width: 100%;
-  }
-`;
-
-/* 모바일: 1줄째 오른쪽 / 데스크톱: 가장 오른쪽 */
-const AuthArea = styled.div`
-  order: 2;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  @media (min-width: 768px) {
-    order: 3;
-  }
-`;
-
-const LoginCta = styled.button`
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  background: transparent;
-  color: #fff;
-  font-weight: 700;
   cursor: pointer;
-  transition:
-    background 0.15s,
-    color 0.15s,
-    border-color 0.15s;
-  &:hover {
-    background: #fff;
-    color: #0b0d17;
-    border-color: #fff;
+
+  img {
+    width: 100%;
+    display: block;
   }
 `;
 
-/* 모바일: 2줄째 전체폭 가운데 / 데스크톱: 중앙 라인 */
 const SearchBox = styled.div`
-  position: relative;
-  order: 4;
-  flex: 1 1 100%;
-  width: 100%;
+  flex: 1;
   max-width: 520px;
-  margin: 6px auto 0;
+  position: relative;
 
   input {
     width: 100%;
@@ -220,11 +189,6 @@ const SearchBox = styled.div`
     border: 1px solid rgba(255, 255, 255, 0.22);
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
-    outline: none;
-    box-sizing: border-box;
-  }
-  input::placeholder {
-    color: rgba(255, 255, 255, 0.72);
   }
 
   .icon {
@@ -232,78 +196,56 @@ const SearchBox = styled.div`
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    opacity: 0.8;
-    pointer-events: none;
-    font-style: normal;
   }
+`;
 
-  @media (min-width: 768px) {
-    order: 2;
-    flex: 0 1 460px;
-    max-width: 42vw;
-    margin: 0 12px;
-  }
+const AuthArea = styled.div`
+  margin-left: auto;
+`;
+
+const LoginCta = styled.button`
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
 `;
 
 const UserImg = styled.img`
   width: 40px;
   height: 40px;
-  border-radius: 9999px;
+  border-radius: 50%;
+  cursor: pointer;
 `;
 
 const DropDown = styled.div`
   position: absolute;
-  top: 48px;
+  top: 50px;
   right: 0;
   width: 140px;
-  padding: 10px 12px;
-  text-align: center;
-  background: rgba(20, 22, 30, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  color: #fff;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(6px) scale(0.98);
-  transform-origin: top right;
-  transition:
-    opacity 0.18s,
-    transform 0.18s,
-    visibility 0s 0.18s;
+  padding: 10px 0;
+  background: rgba(20, 22, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 
   button {
     width: 100%;
-    background: transparent;
-    color: #fff;
-    border: 0;
-    font-weight: 600;
     padding: 8px 0;
+    background: transparent;
+    border: none;
+    color: #fff;
     cursor: pointer;
-    border-radius: 8px;
   }
+
   button:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.1);
   }
 `;
 
 const SignOut = styled.div`
+  margin-left: auto;
   position: relative;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &:hover ${DropDown} {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateY(0) scale(1);
-    transition:
-      opacity 0.18s,
-      transform 0.18s;
-  }
 `;
