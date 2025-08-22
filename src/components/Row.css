@@ -1,91 +1,78 @@
 .row {
-  margin: 56px 0;
-}
-
-.row__title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 18px;
-  color: #fff;
-}
-
-/* 카드 (세로 포스터 비율) */
-.movie-card {
   position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #111;
-  cursor: pointer;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  margin: 20px 0;
 }
 
-.movie-card:hover {
-  transform: scale(1.05) translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+.row-title {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 12px;
 }
 
-.movie-card__img {
+.poster-slide {
+  width: 240px;
+  height: 360px;
+}
+
+.poster-card {
+  position: relative;
   width: 100%;
   height: 100%;
-  aspect-ratio: 2/3; /* 세로 포스터 비율 유지 */
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.poster-card:hover {
+  transform: scale(1.05);
+}
+
+.poster-img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  display: block;
-  border-radius: 10px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* overlay */
-.movie-card__overlay {
+.poster-rating {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 40%);
-  color: #fff;
-  opacity: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 12px;
-  transition: opacity 0.3s ease;
+  bottom: 10px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 6px;
 }
 
-.movie-card:hover .movie-card__overlay {
-  opacity: 1;
+/* Swiper 네비게이션 화살표 */
+.swiper-button-next,
+.swiper-button-prev {
+  color: white;
+  width: 55px;
+  height: 75px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  top: 40%;
 }
 
-.movie-card__overlay h3 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1.4;
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  background: rgba(14, 3, 34, 0.6);
 }
 
-.movie-card__overlay .rating {
-  font-size: 0.85rem;
-  margin-top: 4px;
-  color: #ffcc00;
-  font-weight: 500;
-}
-
-/* Swiper arrows */
-.swiper-button-prev,
-.swiper-button-next {
-  color: white !important;
-  width: 28px !important;
-  height: 28px !important;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 50%;
-  transition: background 0.3s ease;
-}
-
-.swiper-button-prev::after,
-.swiper-button-next::after {
-  font-size: 16px !important;
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 24px;
   font-weight: bold;
 }
 
-.swiper-button-prev:hover,
-.swiper-button-next:hover {
-  background: rgba(255, 255, 255, 0.8);
-  color: black !important;
+.swiper-button-prev.swiper-button-disabled,
+.swiper-button-next.swiper-button-disabled {
+  opacity: 0.2;
+  pointer-events: none;
 }

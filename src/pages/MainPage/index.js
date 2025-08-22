@@ -14,9 +14,14 @@ const MainPage = () => {
 
       {/* 카테고리별 Row */}
       <TrendingRow title="🔥 Trending Now" fetchUrl={requests.fetchTrending} />
-      <Row title="⭐ Top Rated" fetchUrl={requests.fetchTopRated} />
+      <Row
+        title="⭐ Top Rated"
+        fetchUrl={requests.fetchTopRated}
+        showRating={true} // ⭐ 여기서만 별점 보이게!
+      />
       <Row title="🎬 Action Movies" fetchUrl={requests.fetchActionMovies} />
-      <Row title="😁 Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
+      <Row title="😆 Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
+      <Row title="😱 Horror Movies" fetchUrl={requests.fetchHorrorMovies} />
     </Container>
   );
 };
