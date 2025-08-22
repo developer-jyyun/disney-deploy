@@ -63,7 +63,13 @@ const TrendingRow = () => {
           // ⭐ DOM 업데이트 후 원근감/오토플레이 강제 보정
           setTimeout(() => {
             swiper.update();
-            swiper.slideToLoop(Math.floor(swiper.slides.length / 2), 0, false);
+            if (swiper.slides?.length) {
+              swiper.slideToLoop(
+                Math.floor(swiper.slides.length / 2),
+                0,
+                false
+              );
+            }
             swiper.autoplay?.start();
           }, 200);
         }}
