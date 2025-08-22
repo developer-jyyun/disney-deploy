@@ -58,7 +58,8 @@ const TrendingRow = () => {
           centeredSlides={true}
           loop={true}
           slidesPerView={5}
-          // spaceBetween={30}
+          observer={true}
+          observeParents={true}
           coverflowEffect={{
             rotate: 20,
             stretch: -40,
