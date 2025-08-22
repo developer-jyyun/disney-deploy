@@ -1,11 +1,35 @@
-/* .poster-img.large {
-  max-height: 250px;
+.trending-row {
+  margin-bottom: 50px;
+  position: relative;
 }
 
-.poster-img.small {
-  max-height: 150px;
+.trending-card {
+  position: relative;
+  cursor: pointer;
+}
+
+.trending-card img {
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.trending-card:hover img {
+  transform: scale(1.05);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff !important;
+  background: rgba(0, 0, 0, 0.5);
+  width: 45px;
+  height: 45px;
+  border-radius: 6px;
+}
+
+.swiper-button-next.swiper-button-disabled,
+.swiper-button-prev.swiper-button-disabled {
+  opacity: 0.3;
 }
 .swiper-3d {
-  perspective: 500px;
+  perspective: 50;
 }
- */

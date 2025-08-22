@@ -19,23 +19,52 @@ const MainPage = () => {
         fetchUrl={requests.fetchTopRated}
         showRating={true}
       />
-      <Row title="🎬 Action Movies" fetchUrl={requests.fetchActionMovies} />
-      <Row title="😆 Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
-      <Row title="😱 Horror Movies" fetchUrl={requests.fetchHorrorMovies} />
+      <Row
+        title="🎬 Action Movies"
+        fetchUrl={requests.fetchActionMovies}
+        size="small"
+      />
+      <Row
+        title="😆 Comedy Movies"
+        fetchUrl={requests.fetchComedyMovies}
+        size="small"
+      />
+      <Row
+        title="😱 Horror Movies"
+        fetchUrl={requests.fetchHorrorMovies}
+        size="small"
+      />
 
       {/* ✅ 카테고리 */}
-      <Row id="disney" title="🏰 Disney" fetchUrl={requests.fetchDisney} />
-      <Row id="marvel" title="🦸 Marvel" fetchUrl={requests.fetchMarvel} />
-      <Row id="pixar" title="🤖 Pixar" fetchUrl={requests.fetchPixar} />
+      <Row
+        id="disney"
+        title="🏰 Disney"
+        fetchUrl={requests.fetchDisney}
+        size="small"
+      />
+      <Row
+        id="marvel"
+        title="🦸 Marvel"
+        fetchUrl={requests.fetchMarvel}
+        size="small"
+      />
+      <Row
+        id="pixar"
+        title="🤖 Pixar"
+        fetchUrl={requests.fetchPixar}
+        size="small"
+      />
       <Row
         id="starwars"
         title="🚀 Star Wars"
         fetchUrl={requests.fetchStarWars}
+        size="small"
       />
       <Row
         id="natgeo"
         title="🌍 National Geographic"
         fetchUrl={requests.fetchNationalGeographic}
+        size="small"
       />
     </Container>
   );

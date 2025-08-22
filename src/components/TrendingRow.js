@@ -7,86 +7,97 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-coverflow";
 import "./TrendingRow.css";
+import "./Row.css";
+import MovieModal from "./MovieModal/MovieModal";
 
 const TrendingRow = () => {
   const [movies, setMovies] = useState([]);
   const [swiperInstance, setSwiperInstance] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [movieSelected, setMovieSelected] = useState(null);
 
-  //  데이터 불러오기
+  // ✅ 데이터 불러오기
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axiosInstance.get(requests.fetchTrending);
-      setMovies(response.data.results || []);
+      try {
+        const response = await axiosInstance.get(requests.fetchTrending);
+        setMovies(response.data.results || []);
+      } catch (err) {
+        console.error("트렌딩 데이터 불러오기 실패:", err);
+      }
     };
     fetchData();
   }, []);
 
-  //  swiperInstance와 movies가 준비된 뒤 강제 초기화
+  // ✅ Swiper 초기 위치: 가운데 정렬 + 자동재생
   useEffect(() => {
     if (swiperInstance && movies.length > 0) {
       setTimeout(() => {
         swiperInstance.update();
-        swiperInstance.slideToLoop(Math.floor(movies.length / 2), 0, false); // 중앙으로 이동
-        swiperInstance.autoplay?.start(); // autoplay 강제 시작
+        swiperInstance.slideToLoop(Math.floor(movies.length / 2), 0, false);
+        swiperInstance.autoplay?.start();
       }, 100);
     }
   }, [swiperInstance, movies]);
 
+  // ✅ 카드 클릭 → 모달 열기
+  const handleClick = (movie) => {
+    setMovieSelected(movie);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="trending-row">
       <h2 className="row-title">🔥 Trending Now</h2>
-      <Swiper
-        modules={[EffectCoverflow, Autoplay, Navigation]}
-        effect="coverflow"
-        grabCursor={true}
-        centeredSlides={true}
-        centeredSlidesBounds={true}
-        slidesPerView="auto"
-        loop={true}
-        autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
-        }}
-        speed={800}
-        coverflowEffect={{
-          rotate: 20,
-          stretch: -40,
-          depth: 150,
-          modifier: 1,
-          slideShadows: false,
-        }}
-        navigation={true}
-        observer={true}
-        observeParents={true}
-        onSwiper={(swiper) => {
-          setSwiperInstance(swiper);
-          // ⭐ DOM 업데이트 후 원근감/오토플레이 강제 보정
-          setTimeout(() => {
-            swiper.update();
-            if (swiper.slides?.length) {
-              swiper.slideToLoop(
-                Math.floor(swiper.slides.length / 2),
-                0,
-                false
-              );
-            }
-            swiper.autoplay?.start();
-          }, 200);
-        }}
-        className="poster-swiper"
-      >
-        {movies.map((movie) => (
-          <SwiperSlide key={movie.id} className="poster-slide">
-            <div className="poster-card">
-              <img
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={movie.title || movie.name}
-                className="poster-img"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+
+      {movies.length > 0 && (
+        <Swiper
+          modules={[EffectCoverflow, Autoplay, Navigation]}
+          effect="coverflow"
+          grabCursor={true}
+          centeredSlides={true}
+          loop={true}
+          slidesPerView={5}
+          // spaceBetween={30}
+          coverflowEffect={{
+            rotate: 20,
+            stretch: -40,
+            depth: 300,
+            modifier: 1,
+            slideShadows: true,
+          }}
+          autoplay={{
+            delay: 2000,
+            disableOnInteraction: false,
+          }}
+          navigation
+          speed={800}
+          onSwiper={(swiper) => setSwiperInstance(swiper)}
+        >
+          {movies
+            .filter((movie) => movie.poster_path)
+            .map((movie) => (
+              <SwiperSlide key={movie.id}>
+                <div
+                  className="movie-card trending-card"
+                  onClick={() => handleClick(movie)}
+                >
+                  <img
+                    className="movie-card__img"
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title || movie.name}
+                    loading="lazy"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+        </Swiper>
+      )}
+
+      {/* ✅ 모달 */}
+      {isModalOpen && (
+        <MovieModal {...movieSelected} setIsModalOpen={setIsModalOpen} />
+      )}
     </div>
   );
 };
