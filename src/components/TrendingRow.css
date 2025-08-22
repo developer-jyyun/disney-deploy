@@ -30,6 +30,9 @@
 .swiper-button-prev.swiper-button-disabled {
   opacity: 0.3;
 }
-.swiper-3d {
-  perspective: 50;
+
+/*  Swiper 3D 효과 강제 복구 */
+.swiper-3d .swiper-wrapper {
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
 }
