@@ -58,6 +58,7 @@ const SearchPage = () => {
                     src={movieImageUrl}
                     alt="movie"
                   />
+                  <h4>{movieItem.title || movieItem.name}</h4>
                 </div>
               </div>
             );
