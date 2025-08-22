@@ -17,11 +17,26 @@ const MainPage = () => {
       <Row
         title="⭐ Top Rated"
         fetchUrl={requests.fetchTopRated}
-        showRating={true} // ⭐ 여기서만 별점 보이게!
+        showRating={true}
       />
       <Row title="🎬 Action Movies" fetchUrl={requests.fetchActionMovies} />
       <Row title="😆 Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
       <Row title="😱 Horror Movies" fetchUrl={requests.fetchHorrorMovies} />
+
+      {/* ✅ 카테고리 */}
+      <Row id="disney" title="🏰 Disney" fetchUrl={requests.fetchDisney} />
+      <Row id="marvel" title="🦸 Marvel" fetchUrl={requests.fetchMarvel} />
+      <Row id="pixar" title="🤖 Pixar" fetchUrl={requests.fetchPixar} />
+      <Row
+        id="starwars"
+        title="🚀 Star Wars"
+        fetchUrl={requests.fetchStarWars}
+      />
+      <Row
+        id="natgeo"
+        title="🌍 National Geographic"
+        fetchUrl={requests.fetchNationalGeographic}
+      />
     </Container>
   );
 };
