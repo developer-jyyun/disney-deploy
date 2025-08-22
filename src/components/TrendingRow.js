@@ -73,6 +73,12 @@ const TrendingRow = () => {
           }}
           navigation
           speed={800}
+          breakpoints={{
+            320: { slidesPerView: 1 }, // 작은 화면
+            480: { slidesPerView: 2 }, // 모바일 중간
+            768: { slidesPerView: 3 }, // 태블릿
+            1024: { slidesPerView: 5 }, // 데스크탑
+          }}
           onSwiper={(swiper) => setSwiperInstance(swiper)}
         >
           {movies
