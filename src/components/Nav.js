@@ -156,7 +156,6 @@ const NavWrapper = styled.nav`
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 
   & > .inner {
-    max-width: 1400px;
     margin: 0 auto;
     padding: 8px 16px;
     display: flex;
