@@ -105,6 +105,7 @@ const Nav = () => {
           <img src="/images/logo.svg" alt="Disney+" />
         </Logo>
 
+        {/* ✅ 검색창은 여기! */}
         <SearchBox>
           <input
             type="text"
@@ -116,7 +117,6 @@ const Nav = () => {
                 );
             }}
           />
-          <i className="icon">⌕</i>
         </SearchBox>
 
         {userData?.photoURL ? (
@@ -133,7 +133,6 @@ const Nav = () => {
             )}
           </SignOut>
         ) : guest ? (
-          // 게스트 상태: 상단에 '로그인' 버튼 → 팝업 로그인
           <AuthArea>
             <LoginCta onClick={signInFromNav}>로그인</LoginCta>
           </AuthArea>
@@ -146,7 +145,6 @@ const Nav = () => {
 export default Nav;
 
 /* --- styled-components --- */
-
 const NavWrapper = styled.nav`
   position: sticky;
   top: 0;
@@ -160,14 +158,18 @@ const NavWrapper = styled.nav`
     padding: 8px 16px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 30px;
+
+    @media (max-width: 768px) {
+      gap: 12px;
+    }
   }
 `;
 
 const Logo = styled.a`
   flex: 0 0 auto;
   width: 84px;
-  cursor: pointer;
 
   img {
     width: 100%;
@@ -175,31 +177,36 @@ const Logo = styled.a`
   }
 `;
 
+const AuthArea = styled.div`
+  margin-left: auto;
+
+  @media (max-width: 768px) {
+    margin-left: 0; /* 자동 밀림 제거 */
+    order: 1; /* 로고랑 같은 줄 */
+    margin-left: auto; /* 로고 오른쪽에 배치 */
+  }
+`;
 const SearchBox = styled.div`
   flex: 1;
   max-width: 520px;
   position: relative;
 
   input {
-    width: 100%;
     height: 40px;
-    padding: 0 36px 0 12px;
+    padding: 0 12px;
     border-radius: 9999px;
     border: 1px solid rgba(255, 255, 255, 0.22);
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+  @media (max-width: 768px) {
+    flex: 1 1 100%;
+    max-width: 100%;
+    order: 2;
   }
-`;
-
-const AuthArea = styled.div`
-  margin-left: auto;
 `;
 
 const LoginCta = styled.button`
